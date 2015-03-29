@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% if error %}
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+  {% endif %}
+
+  <div class="jumbotron">
+    <h1 style="font-size: 30px">Введи адрес своего сайта</h1>
+    <p class="lead">и мы сгенерируем его карту прямо сейчас</p>
+
+    <form method="POST" id="sitemapform">
+      {% csrf_token %}
+
+      <div class="advanced_link_wrap">
+        <a href="#" id="show_advanced">дополнительные настройки</a>
+      </div>
+
+      {{ form.url }}
+
+      <div class="row" id="advanced">
+        <div class="col-lg-6">
+          <div>
+            <label for="id_changefreq">Частота изменений(changefreq):</label>
+          </div>
+          {{ form.changefreq }}
+        </div>
+
+        <div class="col-lg-6">
+          <div>
+            <label for="id_lastmod">Последнее обновление(lastmod):</label>
+          </div>
+          {{ form.lastmod }}
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <p><input type="submit" class="btn btn-lg btn-success" value="Поехали!" /></p>
+    </form>
+  </div>
+
+  <div class="row marketing">
+    <div class="col-lg-6">
+      <h4>Только живые ссылки</h4>
+      <p>Все страницы в карте сайта будут проверены на доступность.</p>
+    </div>
+
+    <div class="col-lg-6">
+      <h4>Ограничения</h4>
+      <p>Мы соберем максимум 500 ссылок с глубиной просмотра равной 10. Параллельно собираем до 10 сайтов.</p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js %}
+  <script>
+    (function($){
+      $.fn.datepicker.dates['ru'] = {
+        days: ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"],
+        daysShort: ["Вск", "Пнд", "Втр", "Срд", "Чтв", "Птн", "Суб", "Вск"],
+        daysMin: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
+        months: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+        monthsShort: ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"],
+        today: "Сегодня",
+        weekStart: 1
+      };
+    }(jQuery));
+
+    $(document).ready(function() {
+      $('#id_lastmod').datepicker({
+        format: 'dd.mm.yyyy',
+        language: 'ru',
+        weekStart: 1,
+        autoclose: true,
+      });
+
+      $('#show_advanced').click(function() {
+        $('#advanced').slideToggle('fast');
+        return false;
+      });
+
+      $('#id_url').click(function() {
+        this.select();
+      });
+    });
+  </script>
+{% endblock %}

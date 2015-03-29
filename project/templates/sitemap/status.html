@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load pytils_numeral %}
+
+{% block content %}
+  <div class="simple_content">
+    <h3>Идет создание карты сайта...</h3>
+
+    <div style="padding: 10px 0 20px 0; font-size: 17px">
+      <a href="{{ result.url }}">{{ result.url }}</a>
+    </div>
+
+    {% if result.links %}
+      <span>Мы уже собрали {{ result.links|get_plural:"ссылку,ссылки,ссылок" }}...</span>
+    {% else %}
+      <span>Обрабатываем главную страницу...</span>
+    {% endif %}
+  </div>
+
+  <script>
+    setTimeout(function() {
+      location.reload();
+    }, 1500);
+  </script>
+{% endblock %}

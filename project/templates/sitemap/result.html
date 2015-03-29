@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load pytils_numeral %}
+
+{% block content %}
+  <div class="simple_content">
+    {% if result.links %}
+      <h3>Карта сайта готова!</h3>
+
+      <div style="padding: 10px; font-size: 17px">
+        <a href="{{ result.url }}">{{ result.url }}</a>
+      </div>
+
+      <div style="padding: 10px 0 20px 0">
+        Мы собрали
+        <b>{{ result.links|get_plural:"ссылку,ссылки,ссылок" }}</b>
+        за 
+        <b>{{ result.elapsed|get_plural:"секунду,секунды,секунд" }}</b>.
+      </div>
+
+      <a href="/media/{{ result.file_url }}" download>sitemap.xml</a>
+    {% else %}
+      <h3>Не удалось создать карту сайта :(</h3>
+
+      <div style="padding: 10px; font-size: 17px">
+        <a href="{{ result.url }}">{{ result.url }}</a>
+      </div>
+
+      <div style="padding: 10px">
+        Возможно сайт недоступен или вы указали не верную ссылку.
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,6 @@
+*.pyc
+env
+.vagrant
+local_settings.py
+logs/*
+project/media
