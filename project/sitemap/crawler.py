@@ -173,6 +173,9 @@ class SiteCrawler(object):
                 self.domain
             ), href)
 
+        # urlparse fix
+        href = href.replace('/../', '/')
+
         return href
 
     def save_results(self):
