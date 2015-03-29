@@ -88,6 +88,7 @@ class SiteCrawler(object):
 
         try:
             response = requests.get(url, timeout=settings.SITEMAP_REQUEST_TIMEOUT, stream=True)
+            url = response.url
         except Exception as e:
             print e
             return
@@ -174,7 +175,7 @@ class SiteCrawler(object):
             ), href)
 
         # urlparse fix
-        href = href.replace('/../', '/')
+        href = href.replace('../', '')
 
         return href
 
