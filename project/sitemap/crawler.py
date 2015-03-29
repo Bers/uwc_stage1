@@ -168,11 +168,11 @@ class SiteCrawler(object):
                 return '%s/' % href
         else:
             # relative
-            href = u'%s://%s%s' % (
+            href = urljoin('%s://%s' % (
                 self.scheme,
-                self.domain,
-                href
-            )
+                self.domain
+            ), href)
+
         return href
 
     def save_results(self):
