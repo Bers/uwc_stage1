@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for project project.
 
@@ -107,6 +108,17 @@ RQ_QUEUES = {
     'high': RQ,
     'low': RQ
 }
+
+# глубина анализа страниц
+SITEMAP_MAX_DEPTH = 10
+# максимальное количество страниц
+SITEMAP_MAX_PAGES = 500
+
+SITEMAP_WORKERS = 10
+SITEMAP_MAX_CALLS = 600
+SITEMAP_MAX_PAGESIZE = 500000  # bytes
+SITEMAP_REQUEST_TIMEOUT = 3  # sec
+
 
 try:
     from project.local_settings import *

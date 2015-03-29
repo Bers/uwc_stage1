@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
+
 from project.sitemap.xml import make_sitemap
 
 from urlparse import urlparse, urljoin
@@ -17,12 +19,6 @@ import re
 
 
 class SiteCrawler(object):
-    WORKERS = 10
-    MAX_DEPTH = 10
-    MAX_PAGES = 500
-    MAX_CALLS = 600
-    MAX_PAGESIZE = 500000  # bytes
-    REQUEST_TIMEOUT = 3  # sec
 
     def __init__(self, result_key, data):
         self.redis = redis.StrictRedis()
@@ -63,7 +59,7 @@ class SiteCrawler(object):
                 self.q.task_done()
 
         self.q = Queue()
-        for i in range(self.WORKERS):
+        for i in range(settings.SITEMAP_WORKERS):
             t = Thread(target=worker)
             t.daemon = True
             t.start()
@@ -84,14 +80,14 @@ class SiteCrawler(object):
         self.parsed.add(url)
 
         # лимиты
-        if len(self.parsed) >= self.MAX_CALLS:
+        if len(self.parsed) >= settings.SITEMAP_MAX_CALLS:
             return
 
-        if len(self.pages) >= self.MAX_PAGES:
+        if len(self.pages) >= settings.SITEMAP_MAX_PAGES:
             return
 
         try:
-            response = requests.get(url, timeout=self.REQUEST_TIMEOUT, stream=True)
+            response = requests.get(url, timeout=settings.SITEMAP_REQUEST_TIMEOUT, stream=True)
         except Exception as e:
             print e
             return
@@ -103,7 +99,7 @@ class SiteCrawler(object):
         self.pages.add(url)
         self.set_progress()
 
-        if depth < self.MAX_DEPTH:
+        if depth < settings.SITEMAP_MAX_DEPTH:
             self.process_page(url, dom, depth)
 
     def get_dom(self, response):
@@ -115,12 +111,12 @@ class SiteCrawler(object):
 
         # check response size
         clength = response.headers.get('content-length')
-        if clength and int(clength) > self.MAX_PAGESIZE:
+        if clength and int(clength) > settings.SITEMAP_MAX_PAGESIZE:
             print 'too big', response.url
             return
 
         try:
-            with eventlet.Timeout(self.REQUEST_TIMEOUT, False):
+            with eventlet.Timeout(settings.SITEMAP_REQUEST_TIMEOUT, False):
                 return html.fromstring(response.content)
         except Exception as e:
             print e
